@@ -5,15 +5,15 @@ interface DiaryEditorProps {
   selectedDate: Date;
   onClose: () => void;
   onSave: (date: Date, entry: { title: string; mood: string; content: string }) => void;
-  existingEntry?: any;
+  existingEntry?: { title: string; mood: string; content: string };
 }
 
 const moodOptions = [
-  { value: 'HAPPY', label: '행복해요', icon: Smile, color: 'text-yellow-500' },
-  { value: 'LOVE', label: '사랑해요', icon: Heart, color: 'text-pink-500' },
-  { value: 'NEUTRAL', label: '평온해요', icon: Meh, color: 'text-blue-500' },
-  { value: 'SAD', label: '슬퍼요', icon: Frown, color: 'text-indigo-500' },
-  { value: 'ANGRY', label: '화나요', icon: Angry, color: 'text-red-500' },
+  { value: 'happy', label: '행복해요', icon: Smile, color: 'text-yellow-500' },
+  { value: 'love', label: '사랑해요', icon: Heart, color: 'text-pink-500' },
+  { value: 'calm', label: '평온해요', icon: Meh, color: 'text-blue-500' },
+  { value: 'sad', label: '슬퍼요', icon: Frown, color: 'text-indigo-500' },
+  { value: 'angry', label: '화나요', icon: Angry, color: 'text-red-500' },
 ];
 
 export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: DiaryEditorProps) {
@@ -22,9 +22,7 @@ export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: Di
   const [content, setContent] = useState('');
 
   useEffect(() => {
-    // console.log('DiaryEditor : existingEntry:', existingEntry);
-    // console.log('DiaryEditor : existingEntry:', existingEntry===null);
-    if (existingEntry!==null) {
+    if (existingEntry) {
       setTitle(existingEntry.title);
       setMood(existingEntry.mood);
       setContent(existingEntry.content);
@@ -33,7 +31,7 @@ export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: Di
       setMood('happy');
       setContent('');
     }
-  },[existingEntry]);
+  }, [existingEntry, selectedDate]);
 
   const handleSave = () => {
     if (!title.trim() || !content.trim()) {
@@ -144,4 +142,3 @@ export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: Di
     </div>
   );
 }
-export default DiaryEditor;

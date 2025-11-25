@@ -1,32 +1,19 @@
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
 import { Header } from './Header';
-import { Calendar } from './Calender.tsx';
-import { DiaryEditor } from './DiaryEditor.tsx';
-import React from 'react';
-import diaryApi from '../api/diaryApiAxios';
+import { Calendar } from './Calendar';
+import { DiaryEditor } from './DiaryEditor';
 
 export function MainPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedDiaryData, setSelectedDiaryData] = useState<any | null>(null);
   const [diaryEntries, setDiaryEntries] = useState<Record<string, { title: string; mood: string; content: string }>>({});
-  // DiaryEntryData는 ID를 포함한 상세 타입
-  // const [selectedDiaryData, setSelectedDiaryData] = useState<DiaryEntryData | null>(null);
-
-  
 
   const formatDateKey = (date: Date) => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
   };
 
-  const handleDateSelect = (date: Date, data: any) => {
-    console.log('handleDateSelectdate:', date);
-    console.log('handleDateSelectdata:', data);
-    //수정 console.log('handleDateSelect:', data); 삭제
-    
-    //수정 setSelectedDate(date);
+  const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    setSelectedDiaryData(data);
   };
 
   const handleCloseDiary = () => {
@@ -34,20 +21,12 @@ export function MainPage() {
   };
 
   const handleSaveDiary = (date: Date, entry: { title: string; mood: string; content: string }) => {
-    console.log('Saving diary entry for', date, entry);
     const dateKey = formatDateKey(date);
     setDiaryEntries(prev => ({
       ...prev,
       [dateKey]: entry
     }));
-    console.log('Saving diary entry for', date, entry);
     setSelectedDate(null);
-    const diaryData={
-      title: entry.title,
-      mood: entry.mood,
-      content: entry.content
-    }
-    diaryApi.createDiary(diaryData);
   };
 
   const handleMonthChange = (date: Date) => {
@@ -86,8 +65,7 @@ export function MainPage() {
                 selectedDate={selectedDate}
                 onClose={handleCloseDiary}
                 onSave={handleSaveDiary}
-                // 수정 existingEntry={diaryEntries[formatDateKey(selectedDate)]}
-                existingEntry={selectedDiaryData}
+                existingEntry={diaryEntries[formatDateKey(selectedDate)]}
               />
             </div>
           )}
@@ -105,4 +83,3 @@ export function MainPage() {
     </div>
   );
 }
-export default MainPage;
