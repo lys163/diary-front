@@ -14,7 +14,8 @@ export const userApi = {
 
   // 비밀번호 변경
   changePassword: async (passwordData) => {
-    await api.put('/users/me/password', passwordData);
+    const response = await api.put('/users/me/password', passwordData);
+    return response.data;
   },
 
   // 회원 탈퇴

@@ -200,7 +200,7 @@ export function ProfilePage() {
             </div>
 
             {/* 비밀번호 변경 버튼 */}
-            <div>
+            {/* <div>
               <label className="block text-orange-900 mb-2">
                 비밀번호
               </label>
@@ -215,7 +215,7 @@ export function ProfilePage() {
                 </div>
                 <span className="text-orange-600">→</span>
               </button>
-            </div>
+            </div> */}
 
             {/* 수정 버튼 */}
             <button

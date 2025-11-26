@@ -2,12 +2,17 @@ import { useState } from 'react';
 import { Header } from './Header';
 import { Lock, ArrowLeft, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import userApi from '../api/userApi';
 
 export function ChangePasswordPage() {
   const navigate = useNavigate();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [req] = useState({
+    currentPassword: '',
+    newPassword: ''
+  })
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -23,8 +28,15 @@ export function ChangePasswordPage() {
     }
 
     // console.log('비밀번호 변경:', { currentPassword, newPassword });
-    alert('비밀번호가 변경되었습니다!');
-    navigate('/profile');
+    // req.currentPassword=currentPassword
+    // req.newPassword=newPassword
+    // console.log(req)
+    
+    userApi.changePassword(req).then((resp)=>{
+      console.log(resp)
+    })
+    // alert('비밀번호가 변경되었습니다!');
+    // navigate('/profile');
   };
 
   const handleBack = () => {
