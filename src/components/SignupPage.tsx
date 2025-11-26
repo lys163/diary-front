@@ -31,10 +31,10 @@ export function SignupPage() {
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    console.log('회원가입:', formData);
+    // console.log('회원가입:', formData);
     try {
           const response = await authApi.signup(formData);
-          console.log('회원가입 성공:', response);
+          // console.log('회원가입 성공:', response);
           navigate('/login');
         } catch (err) {
 

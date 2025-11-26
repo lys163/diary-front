@@ -27,10 +27,10 @@ export function ProfilePage() {
 
   useEffect(() => {
     userApi.getMyInfo().then((response) => {
-      console.log('username:', response.username);
-      console.log('nickname:', response.nickname);
-      console.log('email:', response.email);
-      console.log('age:', response.age);
+      // console.log('username:', response.username);
+      // console.log('nickname:', response.nickname);
+      // console.log('email:', response.email);
+      // console.log('age:', response.age);
       setFormData({
         username: response.username,
         nickname: response.nickname,
@@ -57,12 +57,12 @@ export function ProfilePage() {
       nickname: formData.nickname,
       age: formData.age,
     };
-    console.log('Update Data:', updateData);
+    // console.log('Update Data:', updateData);
     userApi.updateMyInfo(updateData)
     alert('프로필이 업데이트되었습니다!');
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async() => {
     const confirmed = window.confirm(
       '정말로 계정을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.'
     );
@@ -73,12 +73,16 @@ export function ProfilePage() {
       );
       
       if (doubleConfirm) {
-        userApi.deleteAccount();
-        console.log('계정 삭제');
-        alert('계정이 삭제되었습니다.');
+        try{
+          await userApi.deleteAccount();
+          // console.log('계정 삭제');
+          alert('계정이 삭제되었습니다.');
         
-        AuthApi.logout();
-        navigate('/login');
+          AuthApi.logout();
+          navigate('/login');
+        }catch(err){
+          console.log(err)
+        }
       }
     }
   };

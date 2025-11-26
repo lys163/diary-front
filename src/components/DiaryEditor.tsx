@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Save, Smile, Meh, Frown, Angry, Heart } from 'lucide-react';
+import diaryApi from '../api/diaryApiAxios';
 
 interface DiaryEditorProps {
   selectedDate: Date;
@@ -9,38 +11,101 @@ interface DiaryEditorProps {
 }
 
 const moodOptions = [
-  { value: 'happy', label: '행복해요', icon: Smile, color: 'text-yellow-500' },
-  { value: 'love', label: '사랑해요', icon: Heart, color: 'text-pink-500' },
-  { value: 'calm', label: '평온해요', icon: Meh, color: 'text-blue-500' },
-  { value: 'sad', label: '슬퍼요', icon: Frown, color: 'text-indigo-500' },
-  { value: 'angry', label: '화나요', icon: Angry, color: 'text-red-500' },
+  { value: 'HAPPY', label: '행복해요', icon: Smile, color: 'text-yellow-500' },
+  { value: 'LOVE', label: '사랑해요', icon: Heart, color: 'text-pink-500' },
+  { value: 'NEUTRAL', label: '평온해요', icon: Meh, color: 'text-blue-500' },
+  { value: 'SAD', label: '슬퍼요', icon: Frown, color: 'text-indigo-500' },
+  { value: 'ANGRY', label: '화나요', icon: Angry, color: 'text-red-500' },
 ];
 
 export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: DiaryEditorProps) {
+  const navigate = useNavigate()
   const [title, setTitle] = useState('');
-  const [mood, setMood] = useState('happy');
+  const [mood, setMood] = useState('HAPPY');
   const [content, setContent] = useState('');
+  const [hasData,setHasData] = useState(Boolean)
+  const [responseData,setResponseData] = useState(null)
+  const [createreq] = useState({
+    title: '',
+    content: '',
+    diaryDate: '',
+    mood: ''
+  })
+  const [updateReq] = useState({
+    title: '',
+    content: '',
+    mood: ''
+  })
 
-  useEffect(() => {
-    if (existingEntry) {
-      setTitle(existingEntry.title);
-      setMood(existingEntry.mood);
-      setContent(existingEntry.content);
-    } else {
-      setTitle('');
-      setMood('happy');
-      setContent('');
-    }
-  }, [existingEntry, selectedDate]);
+  // useEffect(() => {
+  //   if (existingEntry) {
+  //     setTitle(existingEntry.title);
+  //     setMood(existingEntry.mood);
+  //     setContent(existingEntry.content);
+  //   } else {
+  //     setTitle('');
+  //     setMood('happy');
+  //     setContent('');
+  //   }
+  // }, [existingEntry, selectedDate]);
+  useEffect(()=>{
+    // console.log("main->DiaryEditor.useEffect",selectedDate)
+    // console.log("formatDate",formatDatedata(selectedDate))
+    diaryApi.getDiaryToDate(formatDatedata(selectedDate)).then((response)=>{
+      // console.log(response)
+      setResponseData(response)
+      if (response!==null){
+        setHasData(true)
+        // console.log(response!==null)
+        setTitle(response?.title)
+        setContent(response?.content)
+        setMood(response?.mood)
+      }else{
+        setHasData(false)
+        setTitle('');
+        setMood('HAPPY');
+        setContent('');
+      }
+    }).catch((err)=>{
+      if (err.response?.status === 404){
+        setHasData(false)
+        setTitle('');
+        setContent('');
+        setMood('HAPPY');
+      }
+    })
+  },[selectedDate])
 
+  const handleUpdate = () =>{
+    updateReq.title=title
+    updateReq.content=content
+    updateReq.mood=mood
+    const id = responseData?.id
+    diaryApi.updateDiary(id,updateReq)
+    navigate("/")
+  }
   const handleSave = () => {
-    if (!title.trim() || !content.trim()) {
-      alert('제목과 내용을 입력해주세요.');
-      return;
-    }
+    // if (!title.trim() || !content.trim()) {
+    //   alert('제목과 내용을 입력해주세요.');
+    //   return;
+    // }
     
-    onSave(selectedDate, { title, mood, content });
+    // onSave(selectedDate, { title, mood, content });
+    createreq.title=title
+    createreq.content=content
+    createreq.mood=mood
+    createreq.diaryDate=formatDatedata(selectedDate)
+    // console.log(createreq)
+    diaryApi.createDiary(createreq)
+    navigate("/")
   };
+  const formatDatedata = (date:Date)=>{
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2,'0');
+    const day = date.getDate().toString().padStart(2,'0');
+
+    return `${year}-${month}-${day}`
+  }
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -131,6 +196,7 @@ export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: Di
 
       {/* 저장 버튼 */}
       <div className="p-6 border-t border-orange-200/50">
+        {!hasData ? (
         <button
           onClick={handleSave}
           className="w-full bg-gradient-to-r from-orange-400 to-rose-500 text-white py-3 rounded-xl hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center space-x-2"
@@ -138,6 +204,13 @@ export function DiaryEditor({ selectedDate, onClose, onSave, existingEntry }: Di
           <Save className="w-5 h-5" />
           <span>저장하기</span>
         </button>
+        ) : (<button
+          onClick={handleUpdate}
+          className="w-full bg-gradient-to-r from-orange-400 to-rose-500 text-white py-3 rounded-xl hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 flex items-center justify-center space-x-2"
+        >
+          <Save className="w-5 h-5" />
+          <span>수정하기</span>
+        </button>)}
       </div>
     </div>
   );

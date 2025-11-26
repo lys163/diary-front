@@ -13,14 +13,14 @@ function LoginPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const handleSignup = () => {
-    console.log('회원가입 페이지로 이동');
+    // console.log('회원가입 페이지로 이동');
     navigate('/signup');
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await authApi.login(credentials);
-      console.log('로그인 성공:', response);
+      // console.log('로그인 성공:', response);
       navigate('/main');
     } catch (err) {
       console.error('로그인 실패:', err.response?.data?.message);
@@ -102,14 +102,14 @@ function LoginPage() {
             </div>
 
             {/* 비밀번호 찾기 링크 */}
-            <div className="flex justify-end">
+            {/* <div className="flex justify-end">
               <button
                 type="button"
                 className="text-orange-500 hover:text-orange-600 transition-colors text-sm"
               >
                 비밀번호를 잊으셨나요?
               </button>
-            </div>
+            </div> */}
 
             {/* 로그인 버튼 */}
             <button

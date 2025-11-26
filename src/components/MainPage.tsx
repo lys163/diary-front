@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from './Header';
 import { Calendar } from './Calendar';
 import { DiaryEditor } from './DiaryEditor';
@@ -7,6 +7,12 @@ export function MainPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [diaryEntries, setDiaryEntries] = useState<Record<string, { title: string; mood: string; content: string }>>({});
+  
+
+  useEffect(()=>{
+
+  })
+
 
   const formatDateKey = (date: Date) => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;

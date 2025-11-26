@@ -39,7 +39,7 @@ export function Header() {
             <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-rose-500 rounded-xl flex items-center justify-center">
               <span className="text-white">📔</span>
             </div>
-            <h2 className="text-orange-950">나의 일기장</h2>
+            <h2 className="text-orange-950">어제의 나</h2>
           </button>
           
           <div className="flex items-center space-x-2">

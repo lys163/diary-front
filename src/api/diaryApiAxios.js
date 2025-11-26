@@ -25,10 +25,16 @@ export const diaryApi = {
 //     return response.json();
 //   },
 
-    getDiary: async (id) => {
+    getDiaryToId: async (id) => {
         const response = await api.get(`/diaries/${id}`);
         return response.data;
     },
+
+    getDiaryToDate: async(dateString)=>{
+      const response=await api.get(`/diaries/${dateString}`)
+      return response.data;
+    },
+
 
   // 일기 작성
 //   createDiary: async (diaryData, token) => {

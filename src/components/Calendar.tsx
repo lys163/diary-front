@@ -1,4 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+
+import diaryApi from '../api/diaryApiAxios'
 
 interface CalendarProps {
   currentDate: Date;
@@ -12,6 +15,8 @@ export function Calendar({ currentDate, selectedDate, onDateSelect, onMonthChang
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
+  
+
   // 해당 월의 첫날과 마지막 날
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
@@ -19,6 +24,19 @@ export function Calendar({ currentDate, selectedDate, onDateSelect, onMonthChang
   // 달력 시작 요일 (0 = 일요일)
   const startDayOfWeek = firstDay.getDay();
   const daysInMonth = lastDay.getDate();
+
+  const [monthData,setMonthData] = useState(null)
+
+  useEffect(()=>{
+
+    diaryApi.getCalendar(year,month+1).then((response)=>{
+      setMonthData(response)
+    })
+  },[year,month])
+
+  useEffect(()=>{
+
+  },[monthData])
 
   // 이전 달로 이동
   const prevMonth = () => {
@@ -130,10 +148,16 @@ export function Calendar({ currentDate, selectedDate, onDateSelect, onMonthChang
                 ${dayOfWeek === 6 && !isSelected(day) ? 'text-blue-500' : ''}
               `}
             >
-              <span className={`${hasEntry ? 'font-bold' : ''}`}>{day}</span>
+              <span className={`${hasEntry ? 'font-bold' : ''}`}>{day}일</span>
               {hasEntry && (
                 <div className="w-1.5 h-1.5 rounded-full bg-current mt-1" />
               )}
+              <div>
+              {monthData?.dailyDiaries[day - 1]?.title?.slice(0, 4)}
+              </div>
+              <div>
+              {monthData?.dailyDiaries[day-1]?.moodEmoji}
+              </div>
             </button>
           );
         })}
